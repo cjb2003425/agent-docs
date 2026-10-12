@@ -4,7 +4,7 @@
 
 1. [Context：理解模型每次回答时看到了什么](#1-context理解模型每次回答时看到了什么)
 2. [Profile：为不同工作建立独立配置](#2-profile为不同工作建立独立配置)
-3. [Bot：把助手接入日常聊天入口](#3-bot把助手接入日常聊天入口)
+3. [Bot Mode：把 Profile 组织成持续工作的助手](#3-bot-mode把-profile-组织成持续工作的助手)
 4. [Skill：将成熟做法整理为可复用流程](#4-skill将成熟做法整理为可复用流程)
 5. [MCP：连接外部工具与数据](#5-mcp连接外部工具与数据)
 6. [Hindsight：长期记忆与检索模型](#6-hindsight长期记忆与检索模型)
@@ -251,51 +251,64 @@ hermes -p server chat
 
 克隆配置后尤其要检查外部连接。官方文档明确指出，克隆的嵌入式 Hindsight 配置可能继续共享原来的守护进程和记忆 Bank，直到为其设置独立的 Hindsight `profile` 和 `bank_id`。[Profile 克隆说明](https://hermes-agent.nousresearch.com/docs/user-guide/profiles/)
 
-## 3. Bot：把助手接入日常聊天入口
+## 3. Bot Mode：把 Profile 组织成持续工作的助手
 
-### 3.1 Bot 与 Profile 的关系
+### 3.1 Bot Mode 与 Profile 的关系
 
-本文中的 Bot 指通过 Telegram、Discord、Slack 等平台与 Hermes 交互的机器人入口。
+本章的 Bot 指 **Hermes Bot Mode 中的助手**。Profile 提供持久配置和状态，Bot Mode 将它呈现为桌面中有名称、头像和固定对话入口的助手。每个这样的 Bot 都对应一个 Profile；普通 Profile 不一定已经成为 Bot 列表中的成员。[官方概念说明](https://hermes-agent.nousresearch.com/docs/user-guide/profiles/)
+
+例如，第 2 章的 `researcher` 可以作为“AI 研究助手”的配置基础；你从 Bot 列表打开它，继续交代研究任务。模型、角色、Skill、工具和记忆设置仍属于这个 Profile。
 
 ```text
-你发送消息
-    ↓
-Bot / 聊天平台
-    ↓
-Hermes Gateway 接收与路由
-    ↓
-对应 Profile 下的 Agent 处理任务
-    ↓
-返回结果
+researcher Profile：模型、角色、技能、凭据与历史
+    ↓ 在 Bot Mode 中呈现
+AI 研究助手：名称、头像、固定 Bot Chat
+    ├── 接收你的研究任务
+    ├── 通过 Routines 执行周期任务
+    └── 与其他 Bot 协作
 ```
 
-**Bot 决定你在哪里使用助手，Profile 决定助手按哪套配置工作。**
+Bot Mode 管理助手的使用方式，Profile 管理助手的配置与状态。使用 CLI 的 `hermes -p researcher chat` 也能访问该 Profile 下的助手，但不能据此假定 CLI 与桌面总会打开同一条会话。
 
-### 3.2 接入一个聊天平台
+### 3.2 创建一位研究 Bot
 
-先验证命令行中的对话正常，再配置研究助手的聊天入口：
+在 Hermes 桌面的 **Bots** 页面选择 **New Agent**，填写名称、标题和职责说明。高级选项可以选择已有 Profile 作为克隆来源，或从新配置开始；也能配置模型、角色说明以及 Skill、工具和 MCP。[Bot Mode 创建说明](https://hermes-agent.nousresearch.com/docs/user-guide/bot-mode/)
+
+例如：
+
+| 项目 | 示例 |
+|---|---|
+| 名称 | `researcher`；已有同名 Profile 时按实际创建方式选择名称 |
+| 标题 | AI 研究助手 |
+| 职责说明 | 跟踪开源 AI 项目，比较部署方案，维护研究资料 |
+| 角色要求 | 优先引用官方资料，区分事实与建议，保留结论的适用条件 |
+| 能力 | 项目评估 Skill、资料读取工具、所需 MCP 连接 |
+
+创建后，先发送一个具体任务，检查模型、工具与输出是否符合预期。克隆 Profile 时，还应按第 2.4 节检查外部记忆 Bank 等连接是否仍与原配置共享。
+
+### 3.3 固定对话与 Routines
+
+Bot Chat 是这个助手的固定对话入口。你可以持续讨论同一个研究方向；需要定期执行的工作，则放入该 Bot 的 **Routines**。例如，每周一整理所关注项目的更新，并列出值得继续研究的问题。Routines 使用 Hermes 的定时任务机制。[官方使用说明](https://hermes-agent.nousresearch.com/docs/user-guide/bot-mode/)
+
+固定对话解决“回到哪里继续合作”的问题，Hindsight 解决跨会话找回经验的问题，LCM 解决长对话的上下文管理问题。它们的作用不同：聊天历史持久保存，并不表示模型每次都能读取全部历史。
+
+### 3.4 多个 Bot 如何分工？
+
+可以按职责建立研究、写作和服务器维护助手，再通过 Bot Mode 的群聊或 Bot 间消息协作。例如，研究助手整理证据，写作助手组织文章，`server` 助手使用第 2.3 节的 SSH backend 核查部署环境。[协作功能说明](https://hermes-agent.nousresearch.com/docs/user-guide/bot-mode/)
+
+分工时应明确交付内容：研究助手提供来源与待验证项，写作助手据此起草，服务器助手反馈实际环境。多个 Bot 并不意味着共享全部上下文或外部记忆；协作时仍需传递所需材料。
+
+### 3.5 与聊天平台机器人的区别
+
+Telegram、Discord 等平台的机器人是 **Messaging Bot**，属于外部消息入口；Bot Mode 中的 Bot 是由 Profile 支撑的助手。使用 Bot Mode 本身不需要创建 Telegram 账号或配置平台 Bot Token。[官方术语说明](https://hermes-agent.nousresearch.com/docs/user-guide/profiles/)
+
+如果需要从手机使用研究助手，可以另行通过 Gateway 配置聊天平台接入：
 
 ```bash
 hermes -p researcher gateway setup
 ```
 
-按向导完成平台凭据、允许用户与运行方式等配置。[官方快速入门](https://hermes-agent.nousresearch.com/docs/getting-started/quickstart/)
-
-之后可以在手机上发送：
-
-> 把这篇文章加入研究资料，告诉我它与我们之前关注的项目有什么联系。
-
-Bot 接收请求，后面的 Agent 和工具负责阅读、检索记忆与维护知识库。
-
-### 3.3 使用时注意什么？
-
-Hermes Gateway 提供白名单和配对授权机制。应明确哪些用户可以使用 Bot，以及它连接了哪些工作资源。[Gateway 授权说明](https://hermes-agent.nousresearch.com/docs/user-guide/security)
-
-另外：
-
-- Bot 入口本身不会自动创造长期记忆，仍需配置相应记忆机制。
-- 能接收消息不代表会定时执行任务；每周推送报告还需要单独设置调度和投递目标。
-- 多个入口是否共享会话或记忆，取决于路由、Profile 与记忆 Bank 的实际配置。
+按向导设置平台凭据、允许用户与运行方式，并核对消息使用的 Profile 和会话。平台接入不会自动保证与桌面 Bot Chat 共用同一条对话。[快速入门](https://hermes-agent.nousresearch.com/docs/getting-started/quickstart/)、[Gateway 授权说明](https://hermes-agent.nousresearch.com/docs/user-guide/security)
 
 ## 4. Skill：将成熟做法整理为可复用流程
 
@@ -924,7 +937,7 @@ metadata:
 
 ### 9.1 一次完整任务
 
-假设你通过 Bot 发来：
+假设你在研究 Bot 的 Bot Chat 中发来：
 
 > 比较项目 A 与项目 B 是否适合我们部署，并更新研究知识库。
 
@@ -932,7 +945,7 @@ metadata:
 
 | 步骤 | 使用的组件 | 作用 |
 |---|---|---|
-| 1 | Bot、Gateway | 接收消息，交给研究 Profile |
+| 1 | Bot Mode | 在研究 Bot 的固定对话中接收任务 |
 | 2 | Profile | 确定模型、规则与工具配置 |
 | 3 | Hindsight | 找回三人团队、中文资料、运维资源有限等约束 |
 | 4 | Skill | 加载项目评估流程 |
@@ -971,7 +984,7 @@ metadata:
 | 阶段 | 完成的事情 | 简单验收 |
 |---|---|---|
 | 1 | 建立 Profile，明确任务上下文 | 能稳定输出符合要求的报告 |
-| 2 | 配置 Bot | 能从聊天平台完成同一任务 |
+| 2 | 建立 Bot Mode 助手 | 能从 Bots 列表回到固定对话；所配置的 Routine 能执行并产生结果 |
 | 3 | 固化 Skill，连接必要工具 | 相似任务按一致流程完成 |
 | 4 | 接入 Hindsight | 新会话找回指定偏好，偏好更新后能正确使用 |
 | 5 | 长对话有需要时引入 LCM | 压缩后仍能找回早期原话或参数 |
@@ -1007,6 +1020,7 @@ metadata:
 | Rerank 可以弥补所有漏召回 | 它只能处理已经进入候选集合的内容 |
 | Rerank 分数高说明内容真实 | 高分主要表示与问题相关，仍需核对事实与时间 |
 | LCM 的摘要不会丢信息 | 摘要会省略，原始记录与恢复路径负责保留细节 |
+| Bot 有固定对话，就会始终记住全部历史 | 固定入口与持久历史不等于全部内容都在当前 Context 中 |
 | Profile 自动隔离所有数据 | 外部服务、凭据和共享目录仍可能共享 |
 | Skill 会自动获得操作系统的权限 | Skill 指导流程，实际操作仍依赖可用工具与权限 |
 | MCP 接得越多越强 | 应选择任务真正需要的工具与访问范围 |
@@ -1047,3 +1061,5 @@ metadata:
 27. [Hindsight：Retain 与 Recall 入门示例](https://hindsight.vectorize.io/cookbook/recipes/quickstart)
 28. [Hindsight：多语言 Embedding 与 Rerank 配置](https://hindsight.vectorize.io/developer/multilingual)
 29. [Hindsight：Recall 检索策略与 API 参考](https://github.com/vectorize-io/hindsight/blob/main/skills/hindsight-docs/references/developer/api/recall.md)
+
+30. [Hermes Agent：Bot Mode](https://hermes-agent.nousresearch.com/docs/user-guide/bot-mode/)
