@@ -298,18 +298,6 @@ Bot Chat 是这个助手的固定对话入口。你可以持续讨论同一个�
 
 分工时应明确交付内容：研究助手提供来源与待验证项，写作助手据此起草，服务器助手反馈实际环境。多个 Bot 并不意味着共享全部上下文或外部记忆；协作时仍需传递所需材料。
 
-### 3.5 与聊天平台机器人的区别
-
-Telegram、Discord 等平台的机器人是 **Messaging Bot**，属于外部消息入口；Bot Mode 中的 Bot 是由 Profile 支撑的助手。使用 Bot Mode 本身不需要创建 Telegram 账号或配置平台 Bot Token。[官方术语说明](https://hermes-agent.nousresearch.com/docs/user-guide/profiles/)
-
-如果需要从手机使用研究助手，可以另行通过 Gateway 配置聊天平台接入：
-
-```bash
-hermes -p researcher gateway setup
-```
-
-按向导设置平台凭据、允许用户与运行方式，并核对消息使用的 Profile 和会话。平台接入不会自动保证与桌面 Bot Chat 共用同一条对话。[快速入门](https://hermes-agent.nousresearch.com/docs/getting-started/quickstart/)、[Gateway 授权说明](https://hermes-agent.nousresearch.com/docs/user-guide/security)
-
 ## 4. Skill：将成熟做法整理为可复用流程
 
 ### 4.1 Skill 是工作方法的载体
@@ -1034,32 +1022,31 @@ metadata:
 
 1. [Hermes Agent：快速入门](https://hermes-agent.nousresearch.com/docs/getting-started/quickstart/)
 2. [Hermes Agent：Profiles](https://hermes-agent.nousresearch.com/docs/user-guide/profiles/)
-3. [Hermes Agent：Gateway 授权与安全](https://hermes-agent.nousresearch.com/docs/user-guide/security)
-4. [Hermes Agent：Skills 系统](https://hermes-agent.nousresearch.com/docs/user-guide/features/skills/)
-5. [Hermes Agent：使用 Skills](https://hermes-agent.nousresearch.com/docs/guides/work-with-skills)
-6. [Hermes Agent：MCP](https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp)
-7. [Hermes Agent：MCP 使用指南](https://hermes-agent.nousresearch.com/docs/guides/use-mcp-with-hermes/)
-8. [Hermes Agent：记忆提供方与 Hindsight 接入](https://hermes-agent.nousresearch.com/docs/user-guide/features/memory-providers)
-9. [Hindsight：Cross-Encoder 重排序技术说明](https://hindsight.vectorize.io/blog/2026/08/28/cross-encoder-reranking-agent-memory)
-10. [Hindsight：部署说明](https://hindsight.vectorize.io/developer/installation)
-11. [Sentence Transformers：Bi-Encoder 与 Cross-Encoder](https://www.sbert.net/examples/cross_encoder/applications/README.html)
-12. [Sentence Transformers：检索与重排序](https://www.sbert.net/examples/sentence_transformer/applications/retrieve_rerank/README.html)
-13. [Sentence Transformers：Cross-Encoder 使用说明](https://sbert.net/docs/cross_encoder/usage/usage.html)
-14. [BAAI：BGE-M3 模型说明](https://huggingface.co/BAAI/bge-m3)
-15. [hermes-lcm：项目与配置说明](https://github.com/stephenschoettler/hermes-lcm)
-16. [Hermes Agent：LLM Wiki Skill](https://hermes-agent.nousresearch.com/docs/user-guide/skills/bundled/research/research-llm-wiki)
-17. [pgvector：向量存储与相似度检索](https://github.com/pgvector/pgvector)
-18. [Hermes Agent：SSH backend 配置](https://hermes-agent.nousresearch.com/docs/user-guide/configuration/#ssh-backend)
-19. [Hermes Agent：CLI Shell 模式](https://hermes-agent.nousresearch.com/docs/user-guide/cli)
-20. [OpenSSH：SSH 连接与认证](https://man.openbsd.org/ssh)
-21. [OpenSSH：客户端配置](https://man.openbsd.org/ssh_config)
-22. [Hindsight：重排序配置参考](https://github.com/vectorize-io/hindsight/blob/main/skills/hindsight-docs/references/developer/configuration.md)
-23. [Hindsight：Cross-Encoder 实现](https://github.com/vectorize-io/hindsight/blob/main/hindsight-api-slim/hindsight_api/engine/cross_encoder.py)
-24. [Hindsight：环境配置示例](https://github.com/vectorize-io/hindsight/blob/main/.env.example)
-25. [Sentence Transformers：MS MARCO MiniLM 重排序模型卡](https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2)
-26. [Hindsight：Retain 的事实提取与向量存储](https://hindsight.vectorize.io/developer/retain)
-27. [Hindsight：Retain 与 Recall 入门示例](https://hindsight.vectorize.io/cookbook/recipes/quickstart)
-28. [Hindsight：多语言 Embedding 与 Rerank 配置](https://hindsight.vectorize.io/developer/multilingual)
-29. [Hindsight：Recall 检索策略与 API 参考](https://github.com/vectorize-io/hindsight/blob/main/skills/hindsight-docs/references/developer/api/recall.md)
+3. [Hermes Agent：Skills 系统](https://hermes-agent.nousresearch.com/docs/user-guide/features/skills/)
+4. [Hermes Agent：使用 Skills](https://hermes-agent.nousresearch.com/docs/guides/work-with-skills)
+5. [Hermes Agent：MCP](https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp)
+6. [Hermes Agent：MCP 使用指南](https://hermes-agent.nousresearch.com/docs/guides/use-mcp-with-hermes/)
+7. [Hermes Agent：记忆提供方与 Hindsight 接入](https://hermes-agent.nousresearch.com/docs/user-guide/features/memory-providers)
+8. [Hindsight：Cross-Encoder 重排序技术说明](https://hindsight.vectorize.io/blog/2026/08/28/cross-encoder-reranking-agent-memory)
+9. [Hindsight：部署说明](https://hindsight.vectorize.io/developer/installation)
+10. [Sentence Transformers：Bi-Encoder 与 Cross-Encoder](https://www.sbert.net/examples/cross_encoder/applications/README.html)
+11. [Sentence Transformers：检索与重排序](https://www.sbert.net/examples/sentence_transformer/applications/retrieve_rerank/README.html)
+12. [Sentence Transformers：Cross-Encoder 使用说明](https://sbert.net/docs/cross_encoder/usage/usage.html)
+13. [BAAI：BGE-M3 模型说明](https://huggingface.co/BAAI/bge-m3)
+14. [hermes-lcm：项目与配置说明](https://github.com/stephenschoettler/hermes-lcm)
+15. [Hermes Agent：LLM Wiki Skill](https://hermes-agent.nousresearch.com/docs/user-guide/skills/bundled/research/research-llm-wiki)
+16. [pgvector：向量存储与相似度检索](https://github.com/pgvector/pgvector)
+17. [Hermes Agent：SSH backend 配置](https://hermes-agent.nousresearch.com/docs/user-guide/configuration/#ssh-backend)
+18. [Hermes Agent：CLI Shell 模式](https://hermes-agent.nousresearch.com/docs/user-guide/cli)
+19. [OpenSSH：SSH 连接与认证](https://man.openbsd.org/ssh)
+20. [OpenSSH：客户端配置](https://man.openbsd.org/ssh_config)
+21. [Hindsight：重排序配置参考](https://github.com/vectorize-io/hindsight/blob/main/skills/hindsight-docs/references/developer/configuration.md)
+22. [Hindsight：Cross-Encoder 实现](https://github.com/vectorize-io/hindsight/blob/main/hindsight-api-slim/hindsight_api/engine/cross_encoder.py)
+23. [Hindsight：环境配置示例](https://github.com/vectorize-io/hindsight/blob/main/.env.example)
+24. [Sentence Transformers：MS MARCO MiniLM 重排序模型卡](https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2)
+25. [Hindsight：Retain 的事实提取与向量存储](https://hindsight.vectorize.io/developer/retain)
+26. [Hindsight：Retain 与 Recall 入门示例](https://hindsight.vectorize.io/cookbook/recipes/quickstart)
+27. [Hindsight：多语言 Embedding 与 Rerank 配置](https://hindsight.vectorize.io/developer/multilingual)
+28. [Hindsight：Recall 检索策略与 API 参考](https://github.com/vectorize-io/hindsight/blob/main/skills/hindsight-docs/references/developer/api/recall.md)
 
-30. [Hermes Agent：Bot Mode](https://hermes-agent.nousresearch.com/docs/user-guide/bot-mode/)
+29. [Hermes Agent：Bot Mode](https://hermes-agent.nousresearch.com/docs/user-guide/bot-mode/)
