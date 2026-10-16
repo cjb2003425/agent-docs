@@ -1,0 +1,2 @@
+# Unified diff context prefixes intentionally put a space before source tabs.
+patches/*.patch text eol=lf -whitespace

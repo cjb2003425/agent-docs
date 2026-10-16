@@ -2,6 +2,10 @@
 
 > 适用场景：公司仅使用 Hermes；Hindsight 已启用 BGE-M3 与 reranker；C/C++ 源码位于 Ubuntu Server；已部署 [`felipeerias/clangd-mcp-server`](https://github.com/felipeerias/clangd-mcp-server)。
 
+## 已解决案例
+
+- [Linux 5.4 升级到 6.12.17 后，DHCP 成功但 UI 显示 Disconnected](docs/cases/linux-6.12-netlink-reuseport-disconnected.zh-CN.md)：Netlink 的 `SO_REUSEPORT` 兼容问题、内核补丁及用户板端验证结果。
+
 ## 1. 目标
 
 将已解决 Jira 的排障过程沉淀为可检索案例，并在分析新日志时：
